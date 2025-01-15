@@ -15,18 +15,18 @@ export class TaskController {
     }
 
     @Get('/:id')
-    findById(@Param('id') id: string): TaskDto{
-        return this.taskService.findById(id);
+    async findById(@Param('id') id: string): Promise<TaskDto>{
+        return await this.taskService.findById(id);
     }
 
     @Get()
-    findAll(@Query() params: FindAllParameters): TaskDto[]{
-        return this.taskService.findAll(params);
+    async findAll(@Query() params: FindAllParameters):  Promise<TaskDto[]>{
+        return await this.taskService.findAll(params);
     }
 
-    @Put()
-    update(@Body() task: TaskDto){
-        this.taskService.update(task);
+    @Put('/:id')
+    async update(@Param('id') id: string , @Body() task: TaskDto): Promise<TaskDto>{
+        return await this.taskService.update(id, task);
     }
 
     @Delete('/:id')

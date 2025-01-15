@@ -6,6 +6,8 @@
   - Typescript
   - Node
   - NestJs
+  - Prisma ORM
+  - JTW
 
  
 ### Funcionaliades
