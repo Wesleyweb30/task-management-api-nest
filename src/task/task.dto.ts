@@ -4,6 +4,7 @@ export class TaskDto {
     description?: string;
     status: string;
     expirationDate: Date;
+    userId?: string;
 }
 
 export interface FindAllParameters {

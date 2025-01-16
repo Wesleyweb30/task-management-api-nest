@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { UserDto } from './user.dto';
-import {v4 as uuid} from 'uuid';
 import {hashSync as bcryptHashSync} from 'bcrypt'
 import { prisma } from 'src/prisma/prisma';
 
@@ -15,7 +14,6 @@ export class UsersService {
                 password : newUser.password
             }
         });
-        console.log(newUser);
     }
 
     async findByUserName(username: string): Promise<UserDto | null> {

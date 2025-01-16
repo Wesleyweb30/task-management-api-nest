@@ -1,73 +1,74 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { FindAllParameters, TaskDto } from './task.dto';
 import { PrismaClient } from '@prisma/client';
+import { FindAllParameters, TaskDto } from './task.dto';
 
 const prisma = new PrismaClient();
 
 @Injectable()
 export class TaskService {
+  async create(task: TaskDto, userId: string) {
+    return await prisma.task.create({
+      data: {
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        expirationDate: new Date(task.expirationDate),
+        userId, // Adiciona o userId diretamente
+      },
+    });
+  }
 
-    async create(task: TaskDto) {
-        await prisma.task.create({
-            data: {
-                title: task.title,
-                description: task.description,
-                status: task.status,
-                expirationDate: new Date(task.expirationDate)
-            }
-        });
+  async findById(id: string, userId: string): Promise<TaskDto> {
+    const foundTask = await prisma.task.findUnique({
+      where: { id },
+    });
+
+    if (!foundTask || foundTask.userId !== userId) {
+      throw new HttpException('Task not found or access denied', HttpStatus.FORBIDDEN);
     }
 
-    async findById(id: string): Promise<TaskDto> {
-        const foundTask = await prisma.task.findUnique({
-            where: { id: id }
-        });
+    return foundTask;
+  }
 
-        if (!foundTask) {
-            throw new HttpException(`Task with id ${id} not found`, HttpStatus.NOT_FOUND);
-        }
+  async findAll(params: FindAllParameters, userId: string): Promise<TaskDto[]> {
+    return await prisma.task.findMany({
+      where: {
+        userId, // Filtra apenas tarefas do usuário
+        AND: [
+          params.title ? { title: { contains: params.title } } : {},
+          params.status ? { status: { contains: params.status } } : {},
+        ],
+      },
+    });
+  }
 
-        return foundTask;
+  async update(id: string, task: TaskDto, userId: string): Promise<TaskDto> {
+    const existingTask = await this.findById(id, userId);
+
+    if (!existingTask) {
+      throw new HttpException('Task not found or access denied', HttpStatus.FORBIDDEN);
     }
 
-    async findAll(params: FindAllParameters): Promise<TaskDto[]> {
-        const tasks = await prisma.task.findMany({
-            where: {
-                AND: [
-                    params.title ? { title: { contains: params.title } } : {},
-                    params.status ? { status: { contains: params.status } } : {}
-                ]
-            }
-        });
+    return await prisma.task.update({
+      where: { id },
+      data: {
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        expirationDate: new Date(task.expirationDate),
+      },
+    });
+  }
 
-        return tasks;
+  async remove(id: string, userId: string): Promise<void> {
+    const existingTask = await this.findById(id, userId);
+
+    if (!existingTask) {
+      throw new HttpException('Task not found or access denied', HttpStatus.FORBIDDEN);
     }
 
-    async update(id: string ,task: TaskDto): Promise<TaskDto> {
-        const updatedTask = await prisma.task.update({
-            where: { id: id },
-            data: {
-                title: task.title,
-                description: task.description,
-                status: task.status,
-                expirationDate: new Date(task.expirationDate)
-            }
-        });
-
-        if (!updatedTask) {
-            throw new HttpException(`Task with id ${task.id} not found`, HttpStatus.BAD_REQUEST);
-        }
-
-        return updatedTask;
-    }
-
-    async remove(id: string): Promise<void> {
-        const deletedTask = await prisma.task.delete({
-            where: { id: id }
-        });
-
-        if (!deletedTask) {
-            throw new HttpException(`Task with id ${id} not found`, HttpStatus.BAD_REQUEST);
-        }
-    }
+    await prisma.task.delete({
+      where: { id },
+    });
+  }
 }
