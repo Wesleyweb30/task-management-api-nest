@@ -1,5 +1,5 @@
 # Task Management
- O task management é um projeto para melhorar organização de tarefas no dia a dia.
+ O task management é um projeto para organização de tarefas.
  Você pode se cadastrar no TaskManagement e organizar suas tarefas.
 
 ### Tecnologias
@@ -14,3 +14,6 @@
   - Cadastrar Usuario
   - Login
   - Controle de Tarefas (Cadastrar, Deletar, Atualizar, Listar)
+
+### Futuras Funcionalidades
+ - Dicas Para outros usuários para concluir as tarefas
