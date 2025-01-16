@@ -16,4 +16,4 @@
   - Controle de Tarefas (Cadastrar, Deletar, Atualizar, Listar)
 
 ### Futuras Funcionalidades
- - Dicas Para outros usuários para concluir as tarefas
+ - Dicas Para outros usuários concluir as tarefas.
