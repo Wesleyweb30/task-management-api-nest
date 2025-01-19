@@ -34,8 +34,4 @@ export class AuthService {
 
     }
 
-    async register(user: UserDto): Promise<UserDto>{
-       const newUser: UserDto = await this.usersService.create(user);
-       return newUser;
-    }
 }
