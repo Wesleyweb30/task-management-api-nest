@@ -4,6 +4,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthResponseDto } from './auth.dto';
 import {compareSync as bcryptCompareSync} from 'bcrypt'
 import { ConfigService } from '@nestjs/config';
+import { UserDto } from 'src/users/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,5 +32,10 @@ export class AuthService {
 
         return { token, expiresIn: this.jwtExpirationTimeInSeconds}
 
+    }
+
+    async register(user: UserDto): Promise<UserDto>{
+       const newUser: UserDto = await this.usersService.create(user);
+       return newUser;
     }
 }

@@ -6,7 +6,7 @@ import { prisma } from 'src/prisma/prisma';
 @Injectable()
 export class UsersService {
 
-    async create(newUser: UserDto){
+    async create(newUser: UserDto): Promise<UserDto>{
         newUser.password = bcryptHashSync(newUser.password, 10);
         await prisma.users.create({
             data: {
@@ -14,6 +14,7 @@ export class UsersService {
                 password : newUser.password
             }
         });
+        return newUser;
     }
 
     async findByUserName(username: string): Promise<UserDto | null> {
